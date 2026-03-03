@@ -1,6 +1,6 @@
 import { app} from "./app";
 
 export default{
-    port: 3000,
+    port:Number(process.env.PORT),
     fetch: app.fetch
 };
