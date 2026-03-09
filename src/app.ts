@@ -9,12 +9,12 @@ app.get('/matchs', (c) => {
   return c.json({ 'success': true, 'message': 'All matchs', 'data': matchs }, 200);
 })
 app.get('/matchs/:id', (c) => {
-  const matchID = parseInt(c.req.param('id'), 10);
-  const matchURL = matchs.find((m) => m.id === matchID);
-  if (!matchURL) {
-    return c.json({ 'success': false, 'error': "Match " + matchID + " does not exist" }, 404);
+  const matchURL = parseInt(c.req.param('id'), 10);
+  const matchID = matchs.find((m) => m.id === matchURL);
+  if (!matchID) {
+    return c.json({ 'success': false, 'error': "Match " + matchURL + " does not exist" }, 404);
   }
-  return c.json({ 'success': true, 'message': 'Match 1', 'data': { 'id': matchID } }, 200);
+  return c.json({ 'success': true, 'message': 'Match ' + matchURL, 'data': matchs[matchURL-1] }, 200);
 })
 
 
