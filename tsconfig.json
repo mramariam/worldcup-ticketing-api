@@ -5,6 +5,12 @@
       "@domain/*": [
         "domain/*"
       ],
+      "@application/*": [
+        "application/*"
+      ],
+      "@infrastructure/*":[
+        "infrastructure/*"
+      ],
     },
     "strict": true,
     "jsx": "react-jsx",
