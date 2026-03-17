@@ -1,14 +1,14 @@
 info:
-  name: Filter matchs by team code (FRA)
+  name: Filter matchs by team code (BRA)
   type: http
-  seq: 3
+  seq: 4
 
 http:
   method: GET
-  url: "{{host}}/matchs?team[code]=FRA"
+  url: "{{host}}/matchs?team[code]=BRA"
   params:
     - name: team[code]
-      value: FRA
+      value: BRA
       type: query
   auth: inherit
 
@@ -17,8 +17,8 @@ runtime:
     - type: tests
       code: |-
         res.body.data.forEach((match) => {
-          const codes = [match.homeTeam.code, match.awayTeam.code];
-          expect(codes).to.include("FRA");
+          const codes = [match.homeTeam.code.value, match.awayTeam.code.value];
+          expect(codes).to.include("BRA");
         });
   assertions:
     - expression: res.body
@@ -27,7 +27,7 @@ runtime:
       operator: isTruthy
     - expression: res.body.message
       operator: contains
-      value: "Matchs filtered by team[code]: FRA"
+      value: "Matchs filtered by team[code]: BRA"
     - expression: res.status
       operator: eq
       value: "200"

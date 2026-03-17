@@ -1,7 +1,7 @@
 info:
-  name: matchs
+  name: cities
   type: folder
-  seq: 4
+  seq: 3
 
 request:
   auth: inherit

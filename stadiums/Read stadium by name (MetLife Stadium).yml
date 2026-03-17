@@ -1,33 +1,22 @@
 info:
-  name: Filter matchs by team code (FRA)
+  name: Read stadium by name (MetLife Stadium)
   type: http
-  seq: 3
+  seq: 12
 
 http:
   method: GET
-  url: "{{host}}/matchs?team[code]=FRA"
-  params:
-    - name: team[code]
-      value: FRA
-      type: query
+  url: "{{host}}/stadiums/MetLife Stadium"
   auth: inherit
 
 runtime:
-  scripts:
-    - type: tests
-      code: |-
-        res.body.data.forEach((match) => {
-          const codes = [match.homeTeam.code, match.awayTeam.code];
-          expect(codes).to.include("FRA");
-        });
   assertions:
     - expression: res.body
       operator: isJson
     - expression: res.body.success
       operator: isTruthy
     - expression: res.body.message
-      operator: contains
-      value: "Matchs filtered by team[code]: FRA"
+      operator: eq
+      value: Stadium MetLife Stadium
     - expression: res.status
       operator: eq
       value: "200"
@@ -35,10 +24,17 @@ runtime:
       operator: eq
       value: application/json
     - expression: res.body.data
-      operator: isArray
+      operator: isJson
     - expression: req.method
       operator: eq
       value: GET
+    - expression: res.body.data.name
+      operator: eq
+      value: MetLife Stadium
+    - expression: res.body.data.city
+      operator: isDefined
+    - expression: res.body.data.capacity
+      operator: isDefined
 
 settings:
   encodeUrl: true
