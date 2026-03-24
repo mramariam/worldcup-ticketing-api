@@ -1,13 +1,13 @@
 import { Context } from "hono";
 import { countries } from "@infrastructure/mock/countries";
-
+import { HTTPException } from "hono/http-exception";
 export class GetCountryByCodeHandler {
     async handle(c: Context) {
-        const countryCodeURL = c.req.param('name');
+        const countryCodeURL = c.req.param('code');
         const countryCode = countries.find((c) => c.code.toLowerCase() === countryCodeURL?.toLowerCase());
         if (!countryCode) {
-            return c.json({ 'success': false, 'error': "Country with code" + countryCodeURL + "does not exist" }, 404);
+            throw new HTTPException(404, { message: "Country \"" + countryCodeURL + "\" does not exist" });
         } else
-            return c.json({ 'success': true, 'message': 'Country with code ' + countryCodeURL, 'data': countryCode }, 200);
+            return c.json({ 'success': true, 'message': 'Country ' + countryCode.name, 'data': countryCode }, 200);
     }
 }

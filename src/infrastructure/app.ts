@@ -10,11 +10,13 @@ export const app = new Hono()
 app.route("/matchs", matchsRouter);
 app.route("/", homeRouter);
 app.route("/teams", teamRouter);
-app.route("/cities",cityRouter);
-app.route("/countries",countryRouter)
+app.route("/cities", cityRouter);
+app.route("/countries", countryRouter)
 app.route("/stadiums", stadiumRouter)
-app.onError((error,c)=>{
-    if(error instanceof HTTPException){
-        return error.getResponse()
+app.onError((error, c) => {
+    if (error instanceof HTTPException) {
+        return c.json({ success:false, error: error.message, status: error.status, }, error.status);
     }
+    console.error("Erreur serveur", error);
+    return c.json({ "success": false, message: "Erreur interne serveur", status: 500, }, 500);
 })

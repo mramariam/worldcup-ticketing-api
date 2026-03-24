@@ -13,7 +13,7 @@ runtime:
     - type: tests
       code: |-
         res.body.data.forEach((match) => {
-          const codes = [match.homeTeam.code.value, match.awayTeam.code.value];
+          const codes = [match.homeTeam.code, match.awayTeam.code];
           expect(codes).to.include("FRA");
           expect(match.stage).to.equal("group");
         });

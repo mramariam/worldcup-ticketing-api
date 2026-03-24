@@ -8,7 +8,7 @@ export class GetCountriesHandler {
         if (!countryNameURL) {
             return c.json({ 'success': true, 'message': 'All countries', 'data': countries }, 200);
         } else if (!countryName) {
-            return c.json({ 'success': true, 'message': "Countries filtered by name:", 'data': [] }, 200);
+            return c.json({ 'success': true, 'message': "Countries filtered by name: "+ countryNameURL, 'data': [countryName] }, 200);
         } else
             return c.json({ 'success': true, 'message': 'Countries filtered by name: ' + countryNameURL, 'data': [countryName] }, 200);
     }
