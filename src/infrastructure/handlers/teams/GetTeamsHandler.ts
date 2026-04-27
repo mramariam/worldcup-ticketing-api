@@ -1,26 +1,29 @@
 import { Context } from "hono";
-import { teams } from "@infrastructure/mock/teams";
 import { HTTPException } from "hono/http-exception";
+import { AppDataSource } from "@infrastructure/database/AppDataSource";
+import { Team } from "@domain/entities/Team";
+import { TeamService } from "@application/services/TeamService";
+import { Repository } from "typeorm";
+import { Match } from "@domain/entities/Match";
+
+const teamRepository: Repository<Team> = AppDataSource.getRepository(Team);
+const matchRepository: Repository<Match> = AppDataSource.getRepository(Match);
+const teamService: TeamService = new TeamService(teamRepository, matchRepository);
+
 export class GetTeamsHandler {
     async handle(c: Context) {
-        const teamURL = c.req.query('sort');
-        if (teamURL !== 'name' && teamURL !== '-name' && teamURL !== undefined) {
-            throw new HTTPException(400,{message:"Bad request"})
-        }
-        const ordreTeam = [...teams];
-        ordreTeam.sort((a, b) => {
-            if (teamURL === '-name') {
-                return b.name.localeCompare(a.name)
-            } return a.name.localeCompare(b.name);
-        });
+        const teamSortURL = c.req.query('sort') as "name" | "-name" | undefined;
         const teamNameURL = c.req.query('name');
-        const teamName = ordreTeam.find((c) => c.name.toLowerCase() === teamNameURL?.toLowerCase());
-        if (!teamNameURL) {
-            return c.json({ 'success': true, 'message': 'All teams', 'data': ordreTeam }, 200);
-        } else if (!teamName) {
-            return c.json({ 'success': true, 'message': "Teams filtered by name: "+teamNameURL, 'data': [teamName] }, 200);
-        } else
-            return c.json({ 'success': true, 'message': 'Teams filtered by name: ' + teamNameURL, 'data': [teamName] }, 200);
+        if (teamSortURL !== 'name' && teamSortURL !== '-name' && teamSortURL !== undefined) {
+            throw new HTTPException(400, { message: "Bad request" });
+        }
+        try {
+            const data = await teamService.findAll({name: teamNameURL,sort: teamSortURL});
+            const message = teamNameURL ? 'Teams filtered by name: ' + teamNameURL : 'All teams';
+            return c.json({ 'success': true, 'message': message, 'data': data }, 200);
 
+        } catch (e) {
+            throw e;
+        }
     }
 }

@@ -1,16 +1,28 @@
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
 import { City } from "@domain/entities/City";
 
+@Entity()
 export class Stadium {
-    name: string;
-    city: City;
-    capacity: number;
+    @PrimaryGeneratedColumn()
+    public id!: number;
 
-    constructor(name: string, city: City, capacity: number) {
-        if (capacity <= 0) {
-            throw new Error("La capacité du stade doit être supérieure à 0.");
+    @Column()
+    public name!: string;
+
+    @ManyToOne(() => City)
+    public city!: City;
+
+    @Column()
+    public capacity!: number;
+
+    constructor(name?: string, city?: City, capacity?: number) {
+        if (name && city && capacity !== undefined) {
+            if (capacity <= 0) {
+                throw new Error("La capacité du stade doit être supérieure à 0.");
+            }
+            this.name = name;
+            this.city = city;
+            this.capacity = capacity;
         }
-        this.name = name;
-        this.city = city;
-        this.capacity = capacity;
     }
 }

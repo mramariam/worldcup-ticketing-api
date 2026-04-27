@@ -1,15 +1,17 @@
 {
   "compilerOptions": {
-    "baseUrl": "./src",
+    "experimentalDecorators": true, 
+    "emitDecoratorMetadata": true,
+    "types": ["bun","node"],
     "paths": {
       "@domain/*": [
-        "domain/*"
+        "./src/domain/*"
       ],
       "@application/*": [
-        "application/*"
+        "./src/application/*"
       ],
       "@infrastructure/*":[
-        "infrastructure/*"
+        "./src/infrastructure/*"
       ],
     },
     "strict": true,

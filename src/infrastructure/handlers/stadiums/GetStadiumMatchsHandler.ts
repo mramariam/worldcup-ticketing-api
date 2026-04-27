@@ -1,15 +1,25 @@
 import { Context } from "hono";
-import { stadiums } from "@infrastructure/mock/stadiums";
-import { matchs } from "@infrastructure/mock/matchs";
 import { HTTPException } from "hono/http-exception";
+import { AppDataSource } from "@infrastructure/database/AppDataSource";
+import { Stadium } from "@domain/entities/Stadium";
+import { Match } from "@domain/entities/Match";
+import { Repository } from "typeorm";
+import { StadiumService } from "@application/services/StadiumService";
+import { NotFoundError } from "@domain/errors/NotFoundError";
+
+const stadiumRepository: Repository<Stadium> = AppDataSource.getRepository(Stadium);
+const matchRepository: Repository<Match> = AppDataSource.getRepository(Match);
+const stadiumService: StadiumService = new StadiumService(stadiumRepository, matchRepository);
 export class GetStadiumMatchsHandler {
     async handle(c: Context) {
         const stadiumURL = (c.req.param('name'));
-        const stadium = stadiums.find((s) => s.name === stadiumURL);
-        if (!stadium) {
-            throw new HTTPException(404, { message: "Stadium \""+stadiumURL+"\" does not exist" });
+        try {
+            const data = await stadiumService.findMatchsByStadium(stadiumURL)
+            return c.json({ success: true, message: "Matchs at " + stadiumURL, data: data })
+        } catch (e) {
+            if (e instanceof NotFoundError)
+                throw new HTTPException(404, { message: "Stadium \"" + stadiumURL + "\" does not exist" });
+            throw e;
         }
-        const stadiumMatch=matchs.filter((m)=>m.stadium.name===stadiumURL)    
-        return c.json({success:true,message:"Matchs at "+stadiumURL,data:stadiumMatch})
     }
 }

@@ -1,15 +1,26 @@
 import { Context } from "hono";
-import { countries } from "@infrastructure/mock/countries";
-import { cities } from "@infrastructure/mock/cities";
 import { HTTPException } from "hono/http-exception";
+import { AppDataSource } from "@infrastructure/database/AppDataSource";
+import { Country } from "@domain/entities/Country";
+import { Repository } from "typeorm";
+import { City } from "@domain/entities/City";
+import { CountryService } from "@application/services/CountryService";
+import { NotFoundError } from "@domain/errors/NotFoundError";
+
+const countryRepository: Repository<Country> = AppDataSource.getRepository(Country);
+const cityRepository: Repository<City> = AppDataSource.getRepository(City);
+const countryService: CountryService = new CountryService(countryRepository, cityRepository);
+
 export class GetCountryCitiesHandler {
     async handle(c: Context) {
-        const countryCodeURL = (c.req.param('code'));
-        const country = countries.find((c) => c.code === countryCodeURL);
-        if (!country) {
-            throw new HTTPException(404, { message: "Country \""+countryCodeURL+"\" does not exist" });
+        const countryCodeURL = c.req.param('code');
+        try {
+            const data = await countryService.findCitiesByCountry(countryCodeURL);
+            return c.json({ success: true, message: "Cities in "+countryCodeURL, data: data }, 200);
+        } catch (e) {
+            if (e instanceof NotFoundError)
+                throw new HTTPException(404, { message: e.message });
+            throw e;
         }
-        const countryCities=cities.filter((c)=>c.country.code===countryCodeURL)    
-        return c.json({success:true,message:"Cities in "+country.name,data:countryCities})
     }
 }
