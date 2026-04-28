@@ -64,7 +64,7 @@ export class StadiumService {
             relations: {
                 homeTeam: true,
                 awayTeam: true,
-                stadium: true
+                stadium: {city:true}
             }
         });
         return stadiumMatchs;

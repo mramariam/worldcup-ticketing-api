@@ -51,7 +51,7 @@ export class MatchService {
             relations: {
                 homeTeam: true,
                 awayTeam: true,
-                stadium: {city:true}
+                stadium: {city:{country:true}}
             }
         });
         if (!match) {

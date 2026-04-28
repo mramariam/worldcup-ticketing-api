@@ -70,7 +70,7 @@ export class TeamService {
             relations: {
                 homeTeam: true,
                 awayTeam: true,
-                stadium: true
+                stadium: {city:true}
             }
         })
         return teamMatchs;
@@ -94,7 +94,7 @@ export class TeamService {
             relations: {
                 homeTeam: true,
                 awayTeam: true,
-                stadium: true
+                stadium: {city:true}
             }
         });
         return teamMatchs;
