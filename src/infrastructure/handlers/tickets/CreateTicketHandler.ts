@@ -29,12 +29,11 @@ export class CreateTicketHandler {
                 "success": true,
                 "message": "Ticket created",
                 "data": {
-                    "matchId": nouveauTicket.match.id,
+                    "id": nouveauTicket.id,
                     "seat": nouveauTicket.seat,
-                    "holder": {
-                        "firstName": nouveauTicket.customer.firstname,
-                        "lastName": nouveauTicket.customer.lastname,
-                        "email": nouveauTicket.customer.email
+                    "email": nouveauTicket.customer.email,
+                    "match": {
+                        "id": nouveauTicket.match.id
                     }
                 }
             }, 201);

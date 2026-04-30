@@ -15,8 +15,9 @@ export class GetCountryCitiesHandler {
     async handle(c: Context) {
         const countryCodeURL = c.req.param('code');
         try {
+            const country=await countryService.findByCode(countryCodeURL);
             const data = await countryService.findCitiesByCountry(countryCodeURL);
-            return c.json({ success: true, message: "Cities in "+countryCodeURL, data: data }, 200);
+            return c.json({ success: true, message: "Cities in "+country.name, data: data }, 200);
         } catch (e) {
             if (e instanceof NotFoundError)
                 throw new HTTPException(404, { message: e.message });
